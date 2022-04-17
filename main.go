@@ -5,34 +5,47 @@ import (
     "github.com/gin-gonic/gin"
     "io/ioutil"
 	"encoding/json"
+    "github.com/swaggo/gin-swagger" // gin-swagger middleware
+    "github.com/swaggo/files" // swagger embed files
+    docs "covid-info/docs"
+
 )
 
-// album represents data about a record album.
-type album struct {
-    ID     string  `json:"id"`
-    Title  string  `json:"title"`
-    Artist string  `json:"artist"`
-    Price  float64 `json:"price"`
-}
 
-// albums slice to seed record album data.
-var albums = []album{
-    {ID: "1", Title: "Blue Train", Artist: "John Coltrane", Price: 56.99},
-    {ID: "2", Title: "Jeru", Artist: "Gerry Mulligan", Price: 17.99},
-    {ID: "3", Title: "Sarah Vaughan and Clifford Brown", Artist: "Sarah Vaughan", Price: 39.99},
-}
+// @BasePath /api/v1
+
+// PingExample godoc
+// @Summary ping example
+// @Schemes
+// @Description do ping
+// @Tags example
+// @Accept json
+// @Produce json
+// @Success 200 {string} Helloworld
+// @Router /example/helloworld [get]
+func Helloworld(g *gin.Context)  {
+    g.JSON(http.StatusOK,"helloworld")
+ }
 
 func main() {
     router := gin.Default()
+    docs.SwaggerInfo.BasePath = "/api/v1"
+    v1 := router.Group("/api/v1")
+    {
+       eg := v1.Group("/example")
+       {
+          eg.GET("/helloworld",Helloworld)
+       }
+    }
     router.GET("/vaccines", getVaccines)
-	router.GET("/albums", getAlbums)
-    router.GET("/albums/:id", getAlbumByID)
-    router.POST("/albums", postAlbums)
+    router.GET("/worldData", getWorldData)
+	router.GET("/news", getCovidNews)
 
+    router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
     router.Run("localhost:8080")
 }
 
-// getAlbums responds with the list of all covid vaccines as JSON.
+// getVaccines responds with the list of all covid vaccines as JSON.
 func getVaccines(c *gin.Context) {
 	url := "https://vaccovid-coronavirus-vaccine-and-treatment-tracker.p.rapidapi.com/api/vaccines/get-all-vaccines"
 
@@ -41,7 +54,9 @@ func getVaccines(c *gin.Context) {
 	req.Header.Add("X-RapidAPI-Host", "vaccovid-coronavirus-vaccine-and-treatment-tracker.p.rapidapi.com")
 	req.Header.Add("X-RapidAPI-Key", "52a0ab89d0msh2d9eb5f9ced6abdp1dea5djsnecb8c1c688af")
 
-	res, _ := http.DefaultClient.Do(req)
+	res, err := http.DefaultClient.Do(req)
+
+    errorValidation(err, c)
 
 	defer res.Body.Close()
 	body, _ := ioutil.ReadAll(res.Body)
@@ -51,38 +66,51 @@ func getVaccines(c *gin.Context) {
     c.IndentedJSON(http.StatusOK, data)
 }
 
-// getAlbums responds with the list of all albums as JSON.
-func getAlbums(c *gin.Context) {
-    c.IndentedJSON(http.StatusOK, albums)
+// getWorldData responds with the list of all covid updates as JSON.
+func getWorldData(c *gin.Context) {
+	url := "https://vaccovid-coronavirus-vaccine-and-treatment-tracker.p.rapidapi.com/api/npm-covid-data/world"
+
+	req, _ := http.NewRequest("GET", url, nil)
+
+	req.Header.Add("X-RapidAPI-Host", "vaccovid-coronavirus-vaccine-and-treatment-tracker.p.rapidapi.com")
+	req.Header.Add("X-RapidAPI-Key", "52a0ab89d0msh2d9eb5f9ced6abdp1dea5djsnecb8c1c688af")
+
+	res, err := http.DefaultClient.Do(req)
+
+    errorValidation(err, c)
+
+	defer res.Body.Close()
+	body, _ := ioutil.ReadAll(res.Body)
+    var data any
+    json.Unmarshal(body, &data)
+
+    c.IndentedJSON(http.StatusOK, data)
 }
 
-// postAlbums adds an album from JSON received in the request body.
-func postAlbums(c *gin.Context) {
-    var newAlbum album
-
-    // Call BindJSON to bind the received JSON to
-    // newAlbum.
-    if err := c.BindJSON(&newAlbum); err != nil {
-        return
-    }
-
-    // Add the new album to the slice.
-    albums = append(albums, newAlbum)
-    c.IndentedJSON(http.StatusCreated, newAlbum)
+func errorValidation(err error, c *gin.Context) {
+	if err != nil {
+		c.IndentedJSON(http.StatusInternalServerError, err)
+	}
 }
 
-// getAlbumByID locates the album whose ID value matches the id
-// parameter sent by the client, then returns that album as a response.
-func getAlbumByID(c *gin.Context) {
-    id := c.Param("id")
+// getWorldData responds with the list of all covid news as JSON.
+func getCovidNews(c *gin.Context) {
+	url := "https://vaccovid-coronavirus-vaccine-and-treatment-tracker.p.rapidapi.com/api/news/get-coronavirus-news/0"
 
-    // Loop through the list of albums, looking for
-    // an album whose ID value matches the parameter.
-    for _, a := range albums {
-        if a.ID == id {
-            c.IndentedJSON(http.StatusOK, a)
-            return
-        }
-    }
-    c.IndentedJSON(http.StatusNotFound, gin.H{"message": "album not found"})
+	req, _ := http.NewRequest("GET", url, nil)
+
+	req.Header.Add("X-RapidAPI-Host", "vaccovid-coronavirus-vaccine-and-treatment-tracker.p.rapidapi.com")
+	req.Header.Add("X-RapidAPI-Key", "52a0ab89d0msh2d9eb5f9ced6abdp1dea5djsnecb8c1c688af")
+
+	res, err := http.DefaultClient.Do(req)
+
+    errorValidation(err, c)
+
+	defer res.Body.Close()
+	body, _ := ioutil.ReadAll(res.Body)
+    var data any
+    json.Unmarshal(body, &data)
+
+    c.IndentedJSON(http.StatusOK, data)
 }
+
