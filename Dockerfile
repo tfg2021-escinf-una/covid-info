@@ -9,7 +9,8 @@ ADD docs ./docs
 
 RUN go mod download
 
+RUN go build -o /covid-info
 
 EXPOSE 8080
 
-CMD [ "go", "run", "." ]
+CMD [ "/covid-info" ]

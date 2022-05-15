@@ -49,7 +49,7 @@ func main() {
 	router.GET("/liveness", liveness)
 
     router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-    router.Run("localhost:8080")
+    router.Run("0.0.0.0:8080")
 }
 
 func Helloworld(g *gin.Context)  {
