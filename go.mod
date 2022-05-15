@@ -2,7 +2,12 @@ module covid-info
 
 go 1.18
 
-require github.com/gin-gonic/gin v1.7.7
+require (
+	github.com/gin-gonic/gin v1.7.7
+	github.com/swaggo/files v0.0.0-20210815190702-a29dd2bc99b2
+	github.com/swaggo/gin-swagger v1.4.2
+	github.com/swaggo/swag v1.8.1
+)
 
 require (
 	github.com/KyleBanks/depth v1.2.1 // indirect
@@ -48,9 +53,6 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/spf13/viper v1.11.0 // indirect
 	github.com/subosito/gotenv v1.2.0 // indirect
-	github.com/swaggo/files v0.0.0-20210815190702-a29dd2bc99b2 // indirect
-	github.com/swaggo/gin-swagger v1.4.2 // indirect
-	github.com/swaggo/swag v1.8.1 // indirect
 	github.com/toqueteos/webbrowser v1.2.0 // indirect
 	github.com/ugorji/go/codec v1.2.7 // indirect
 	github.com/urfave/cli/v2 v2.4.0 // indirect
