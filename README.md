@@ -9,7 +9,9 @@ Swagger docs here: https://github.com/swaggo/gin-swagger
 go get .
 ```
 
-2. Run the server
+2. Declare env_variables API_HOST and API_KEY
+
+3. Run the server
 ```sh
 go run .
 ```
