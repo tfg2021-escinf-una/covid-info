@@ -4,8 +4,8 @@ metadata:
   name: xapisecrets
 type: Opaque
 stringData:
-  NotificationEmailAddress: $NotificationEmailAddress
-  NotificationPassword: $NotificationPassword
+  CovidInfoAPIHost: $CovidInfoAPIHost
+  CovidInfoAPIKey: $CovidInfoAPIKey
 
 ---
 apiVersion: apps/v1
@@ -47,6 +47,6 @@ spec:
   type: ClusterIP
   ports:
   - name: "covid-info"
-    port: 5000
+    port: 8080
   selector:
     app: covid-info
