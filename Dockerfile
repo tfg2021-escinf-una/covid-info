@@ -4,8 +4,10 @@ WORKDIR /app
 
 COPY go.mod ./
 COPY go.sum ./
+COPY main.go ./
 
 RUN go mod download
+
 
 EXPOSE 8080
 
