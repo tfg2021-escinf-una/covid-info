@@ -1,0 +1,2 @@
+host: vaccovid-coronavirus-vaccine-and-treatment-tracker.p.rapidapi.com
+key: 52a0ab89d0msh2d9eb5f9ced6abdp1dea5djsnecb8c1c688af
