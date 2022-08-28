@@ -1,4 +1,4 @@
-# covid-info  microservice
+# Covid-info  microservice
 
 Information regarding Covid, updates, news and vaccines available. Powered by RapidAPI.
 Swagger docs here: https://github.com/swaggo/gin-swagger
