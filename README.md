@@ -16,3 +16,4 @@ go get .
 ```sh
 go run .
 ```
+ 4. Access data from the endpoints
